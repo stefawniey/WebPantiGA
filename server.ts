@@ -769,6 +769,8 @@ const userStatusStore = new Map<string | number, string>();
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server Griya Amanah berjalan di http://localhost:${PORT}`);
   });
+
+  return app;
 }
 
-startServer();
+export const appPromise = startServer();
