@@ -1,5 +1,4 @@
 import express from 'express';
-import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
@@ -123,9 +122,9 @@ async function startServer() {
   app.use(express.json());
   app.use(cookieParser());
 
-  // Jalankan Seeding saat server mulai
+  // Jalankan Seeding saat server mulai (Lewati di Vercel untuk performa cold start)
   const supabase = getSupabase();
-  if (supabase) {
+  if (supabase && !process.env.VERCEL) {
     seedDatabase(supabase).catch(console.error);
   }
 
@@ -208,13 +207,14 @@ async function startServer() {
     
     console.log("Percobaan login untuk email:", email);
     
-    const supabase = getSupabase();
-    if (!supabase) {
-      console.error("Login Gagal: Supabase tidak terkonfigurasi!");
-      return res.status(500).json({ error: 'Database tidak terkonfigurasi' });
-    }
-
     try {
+      const supabase = getSupabase();
+      if (!supabase) {
+        console.error("Login Gagal: Supabase tidak terkonfigurasi!");
+        return res.status(500).json({ error: 'Database tidak terkonfigurasi' });
+      }
+
+      console.log("Mencari pengguna di database...");
       // 1. Check if user exists in DB first
       const { data: user, error } = await supabase
         .from('users')
@@ -222,10 +222,18 @@ async function startServer() {
         .eq('email', email)
         .maybeSingle();
 
+      if (error) {
+        console.error("Supabase Error saat login:", error);
+        return res.status(500).json({ error: 'Kesalahan database: ' + error.message });
+      }
+
+      console.log("Pengguna ditemukan:", user ? "Ya" : "Tidak");
+      
       // 2. Check password with Super Admin Bypass for development
       const isSuperAdmin = (email === 'admin@amanah.id' && password === 'admin123');
 
       if (isSuperAdmin || (user && bcrypt.compareSync(password, user.password))) {
+        console.log("Login berhasil, menyiapkan session...");
         const userData = user ? { 
           id: user.id, 
           email: user.email, 
@@ -240,13 +248,20 @@ async function startServer() {
           bio: 'Administrator Sistem'
         };
         
-        res.cookie('user', JSON.stringify(userData), { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('user', JSON.stringify(userData), { 
+          httpOnly: true, 
+          maxAge: 24 * 60 * 60 * 1000,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax'
+        });
         return res.json(userData);
       }
       
+      console.log("Login gagal: Email atau password salah");
       res.status(401).json({ error: 'Email atau kata sandi salah' });
     } catch (err: any) {
-      res.status(500).json({ error: 'Gagal melakukan login server' });
+      console.error("Fatal login error:", err);
+      res.status(500).json({ error: 'Gagal melakukan login server: ' + (err.message || 'Error tidak diketahui') });
     }
   });
 
@@ -754,6 +769,7 @@ const userStatusStore = new Map<string | number, string>();
 
   // Vite middleware
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
