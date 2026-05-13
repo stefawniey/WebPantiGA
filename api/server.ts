@@ -760,15 +760,17 @@ const userStatusStore = new Map<string | number, string>();
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(__dirname, 'dist')));
+    app.use(express.static(path.join(__dirname, '../dist')));
     app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'dist/index.html'));
+      res.sendFile(path.join(__dirname, '../dist/index.html'));
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server Griya Amanah berjalan di http://localhost:${PORT}`);
-  });
+  if (process.env.NODE_ENV !== 'production' || (!process.env.VERCEL && !process.env.PORT)) {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server Griya Amanah berjalan di http://localhost:${PORT}`);
+    });
+  }
 
   return app;
 }
