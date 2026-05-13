@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Mail, Lock, ArrowRight, User as UserIcon, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { User } from '../types';
 
@@ -65,41 +65,51 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
           Kembali
         </Link>
       </motion.div>
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-[760px] w-full flex flex-col md:flex-row bg-white rounded-[3rem] overflow-hidden shadow-3xl border border-emerald-50"
-      >
-        {/* Left Side: Illustration & Motivation */}
-        <div className="hidden md:flex flex-1 premium-gradient p-12 flex-col justify-between relative overflow-hidden">
-          <div className="relative z-10">
-            <Link to="/" className="flex items-center gap-2 mb-12">
-              <div className="p-1.5 bg-white rounded-md">
-                <Heart className="w-4 h-4 text-emerald-600" />
-              </div>
-              <span className="text-xl font-display font-bold text-white tracking-tight">Griya Amanah</span>
-            </Link>
-            <h2 className="text-5xl font-display font-bold text-white mb-6 leading-tight">Selamat Datang di Jaringan Kebaikan.</h2>
-            <p className="text-emerald-100/70 text-lg leading-relaxed text-sm">Bergabunglah dengan komunitas dermawan yang telah memberikan dampak nyata bagi pendidikan dan kesejahteraan mereka yang membutuhkan.</p>
-          </div>
-          
-          <div className="relative z-10 flex items-center gap-4 p-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl mt-12">
-             <div className="w-12 h-12 rounded-full bg-gold flex items-center justify-center flex-shrink-0">
-                <Heart className="w-6 h-6 text-emerald-900" />
-             </div>
-             <div className="text-sm">
-                <div className="text-white font-bold">Wujudkan Masa Depan Mereka</div>
-                <div className="text-emerald-100/60 font-medium text-xs">Setiap kontribusi Anda sangat berarti.</div>
-             </div>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={isLogin ? 'login' : 'register'}
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          className="max-w-[760px] w-full flex flex-col md:flex-row bg-white rounded-[3rem] overflow-hidden shadow-3xl border border-emerald-50"
+        >
+          {/* Left Side: Illustration & Motivation */}
+          <div className="hidden md:flex flex-1 premium-gradient p-12 flex-col justify-between relative overflow-hidden">
+            <div className="relative z-10">
+              <Link to="/" className="flex items-center gap-2 mb-12">
+                <motion.div 
+                  whileHover={{ rotate: 15 }}
+                  className="p-1.5 bg-white rounded-md"
+                >
+                  <Heart className="w-4 h-4 text-emerald-600" />
+                </motion.div>
+                <span className="text-xl font-display font-bold text-white tracking-tight">Griya Amanah</span>
+              </Link>
+              <h2 className="text-5xl font-display font-bold text-white mb-6 leading-tight">Selamat Datang di Jaringan Kebaikan.</h2>
+              <p className="text-emerald-100/70 text-lg leading-relaxed text-sm">Bergabunglah dengan komunitas dermawan yang telah memberikan dampak nyata bagi pendidikan dan kesejahteraan mereka yang membutuhkan.</p>
+            </div>
+            
+            <motion.div 
+              whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+              className="relative z-10 flex items-center gap-4 p-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl mt-12 cursor-default"
+            >
+               <div className="w-12 h-12 rounded-full bg-gold flex items-center justify-center flex-shrink-0">
+                  <Heart className="w-6 h-6 text-emerald-900" />
+               </div>
+               <div className="text-sm">
+                  <div className="text-white font-bold">Wujudkan Masa Depan Mereka</div>
+                  <div className="text-emerald-100/60 font-medium text-xs">Setiap kontribusi Anda sangat berarti.</div>
+               </div>
+            </motion.div>
+
+            {/* Abstract circles */}
+            <div className="absolute -top-20 -left-20 w-64 h-64 bg-emerald-600 rounded-full blur-3xl opacity-50"></div>
+            <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-emerald-900 rounded-full blur-3xl opacity-50"></div>
           </div>
 
-          {/* Abstract circles */}
-          <div className="absolute -top-20 -left-20 w-64 h-64 bg-emerald-600 rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-emerald-900 rounded-full blur-3xl opacity-50"></div>
-        </div>
-
-        {/* Right Side: Form */}
-        <div className="flex-1 p-8 md:p-12">
+          {/* Right Side: Form */}
+          <div className="flex-1 p-8 md:p-12">
 
           <div className="w-full">
             <h1 className="text-4xl font-display font-bold text-emerald-900 mb-2">
@@ -208,7 +218,8 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
 
           </div>
         </div>
-      </motion.div>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

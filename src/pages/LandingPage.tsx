@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Heart, ShieldCheck, TrendingUp, ArrowRight, Home, Users, Gift, DollarSign } from 'lucide-react';
+import { Heart, ShieldCheck, TrendingUp, ArrowRight, Home, Users, Gift, DollarSign, Target } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -8,16 +8,42 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-white/20">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2"
+          >
             <div className="p-2 bg-emerald-600 rounded-lg">
-              <Heart className="w-6 h-6 text-white text-emerald-100" />
+              <Heart className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-display font-bold text-emerald-900">Griya Amanah</span>
-          </div>
-          <div className="flex items-center gap-8 text-sm font-medium text-emerald-800">
-            <a href="#impact" className="hover:text-emerald-600 transition-colors hover:scale-110 duration-200">Dampak</a>
-            <a href="#featured" className="hover:text-emerald-600 transition-colors hover:scale-110 duration-200">Program Kebaikan</a>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          </motion.div>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-emerald-800">
+            <motion.a 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              href="#impact" 
+              className="hover:text-emerald-600 transition-colors hover:scale-110 duration-200"
+            >
+              Dampak
+            </motion.a>
+            <motion.a 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              href="#featured" 
+              className="hover:text-emerald-600 transition-colors hover:scale-110 duration-200"
+            >
+              Program Kebaikan
+            </motion.a>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.95 }}
+            >
               <Link 
                 to="/login" 
                 className="px-6 py-2.5 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 block font-bold"
@@ -80,11 +106,15 @@ export default function LandingPage() {
 
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, x: 20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
+              whileInView={{ opacity: 1, scale: 1, x: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.8 }}
               className="relative hidden lg:block"
             >
-              <div className="relative z-10 w-full aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white/50 rotate-3 hover:rotate-0 transition-transform duration-500">
+              <motion.div 
+                whileHover={{ rotate: 0, scale: 1.02 }}
+                className="relative z-10 w-full aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white/50 rotate-3 transition-all duration-500"
+              >
                 <img 
                   src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
                   className="w-full h-full object-cover"
@@ -92,23 +122,79 @@ export default function LandingPage() {
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-emerald-900/10"></div>
-              </div>
+              </motion.div>
               
               {/* Floating badges */}
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute -top-6 -left-6 glass p-4 rounded-2xl flex items-center gap-3 z-20 shadow-xl"
               >
-                 <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-emerald-900">
+                 <motion.div 
+                   whileHover={{ rotate: 360 }}
+                   transition={{ duration: 0.5 }}
+                   className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-emerald-900"
+                 >
                     <Heart className="w-6 h-6" />
-                 </div>
+                 </motion.div>
                  <div className="text-xs font-bold text-emerald-900">Penyaluran<br/>Transparan</div>
               </motion.div>
 
               {/* Decorative Blur Background */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-200/30 rounded-full blur-3xl -z-10"></div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 bg-beige/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Transparansi Total",
+                desc: "Laporan penyaluran yang dapat dipantau secara langsung oleh para dermawan.",
+                icon: ShieldCheck,
+                color: "text-emerald-600",
+                bg: "bg-emerald-50",
+                delay: 0.1
+              },
+              {
+                title: "Program Berkelanjutan",
+                desc: "Fokus pada pemberdayaan jangka panjang melalui pendidikan dan logistik.",
+                icon: Target,
+                color: "text-gold",
+                bg: "bg-gold/10",
+                delay: 0.2
+              },
+              {
+                title: "Ekosistem Digital",
+                desc: "Memudahkan distribusi bantuan secara merata dan tepat sasaran.",
+                icon: Heart,
+                color: "text-red-600",
+                bg: "bg-red-50",
+                delay: 0.3
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: item.delay, duration: 0.6 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="bg-white p-10 rounded-[3rem] shadow-xl shadow-emerald-900/[0.03] border border-emerald-50 group hover:border-emerald-200 transition-all cursor-default"
+              >
+                <div className={`w-16 h-16 ${item.bg} ${item.color} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-transform`}>
+                  <item.icon className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-display font-black text-emerald-900 mb-4 tracking-tight">{item.title}</h3>
+                <p className="text-emerald-800/60 leading-relaxed font-medium text-sm">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -163,31 +249,47 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
              <motion.div 
-               whileHover={{ y: -10 }}
+               initial={{ opacity: 0, x: -30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               whileHover={{ y: -10, scale: 1.02 }}
                className="group relative h-[500px] rounded-[3rem] overflow-hidden shadow-2xl"
              >
                 <img src="https://images.unsplash.com/photo-1540479859555-17af45c78602?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Program Kebaikan 1" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/40 to-transparent p-12 flex flex-col justify-end">
-                  <span className="inline-block px-3 py-1 rounded-full bg-gold text-emerald-900 text-[10px] font-bold uppercase mb-4 w-fit">Kebutuhan Mendesak</span>
+                  <motion.span 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    className="inline-block px-3 py-1 rounded-full bg-gold text-emerald-900 text-[10px] font-black uppercase mb-4 w-fit shadow-lg"
+                  >
+                    Kebutuhan Mendesak
+                  </motion.span>
                   <h3 className="text-3xl font-display font-bold text-white mb-2">Griya Amanah Kasih</h3>
                   <p className="text-emerald-50/80 mb-6 line-clamp-2">Memerlukan bantuan bahan pangan dan perlengkapan dasar untuk binaan kami.</p>
-                  <Link to="/login" className="w-full py-4 bg-white text-emerald-900 text-center font-bold rounded-2xl hover:bg-emerald-50 transition-colors">
-                    Donasi Sekarang
-                  </Link>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Link to="/login" className="w-full py-4 bg-white text-emerald-900 text-center font-bold rounded-2xl hover:bg-emerald-50 transition-colors block">
+                      Donasi Sekarang
+                    </Link>
+                  </motion.div>
                 </div>
              </motion.div>
 
              <motion.div 
-               whileHover={{ y: -10 }}
+               initial={{ opacity: 0, x: 30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               whileHover={{ y: -10, scale: 1.02 }}
                className="group relative h-[500px] rounded-[3rem] overflow-hidden shadow-2xl"
              >
                 <img src="https://images.unsplash.com/photo-1594708767771-a7502209ff51?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Program Kebaikan 2" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/40 to-transparent p-12 flex flex-col justify-end">
                   <h3 className="text-3xl font-display font-bold text-white mb-2">Program Cahaya Hati</h3>
                   <p className="text-emerald-50/80 mb-6 line-clamp-2">Berfokus pada pengembangan kemandirian melalui program pendidikan khusus.</p>
-                  <Link to="/login" className="w-full py-4 bg-emerald-600 text-white text-center font-bold rounded-2xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-900/40 border border-emerald-500">
-                    Donasi Sekarang
-                  </Link>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Link to="/login" className="w-full py-4 bg-emerald-600 text-white text-center font-bold rounded-2xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-900/40 border border-emerald-500 block">
+                      Donasi Sekarang
+                    </Link>
+                  </motion.div>
                 </div>
              </motion.div>
           </div>

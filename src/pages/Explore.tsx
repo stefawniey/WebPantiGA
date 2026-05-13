@@ -217,23 +217,40 @@ export default function Explore() {
 
   return (
     <div className="space-y-10 pb-20">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+      >
         <div>
-           <h1 className="text-4xl font-display font-black text-emerald-900 mb-2">
+           <motion.h1 
+             initial={{ opacity: 0, x: -20 }}
+             animate={{ opacity: 1, x: 0 }}
+             transition={{ delay: 0.1 }}
+             className="text-4xl font-display font-black text-emerald-900 mb-2 tracking-tight"
+           >
              {userRole === 'admin' ? 'Mitra Kemanusiaan' : 'Program Kebaikan'}
-           </h1>
-           <p className="text-emerald-800/60 font-medium">
+           </motion.h1>
+           <motion.p 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             transition={{ delay: 0.2 }}
+             className="text-emerald-800/60 font-medium max-w-xl"
+           >
              {userRole === 'admin' 
                ? 'Kelola data lembaga, pantau target kontribusi, dan kurasi ekosistem kebaikan.' 
                : 'Temukan dan bantu program kemanusiaan yang memerlukan dukungan lewat kontribusi Anda.'}
-           </p>
+           </motion.p>
         </div>
         
         <div className="flex items-center gap-4">
           {userRole === 'admin' && (
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, backgroundColor: '#047857' }}
               whileTap={{ scale: 0.95 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3 }}
               onClick={handleOpenAdd}
               className="px-6 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-emerald-600/20"
             >
@@ -241,23 +258,23 @@ export default function Explore() {
             </motion.button>
           )}
 
-          {userRole !== 'admin' && (
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="relative w-full md:w-80 group"
-            >
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Cari program atau lokasi..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white border border-emerald-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-medium text-emerald-900 shadow-sm"
-              />
-            </motion.div>
-          )}
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="relative w-full md:w-80 group"
+          >
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Cari program atau lokasi..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 bg-white border border-emerald-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-medium text-emerald-900 shadow-sm"
+            />
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

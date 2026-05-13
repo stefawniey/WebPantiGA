@@ -50,26 +50,52 @@ export default function Dashboard() {
     <div className="space-y-8 pb-12">
       {/* ... (keeping existing layout) */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5 }}
         className="premium-gradient rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-emerald-200"
       >
-        <div className="relative z-10">
-          <h1 className="text-3xl font-display font-bold mb-2">Terima Kasih Atas Kebaikannya!</h1>
-          <p className="text-emerald-100/80 max-w-md mb-8">Setiap kontribusi Anda membantu menyediakan masa depan yang lebih baik bagi mereka yang diberdayakan lewat program kami.</p>
+        <div className="relative z-10 text-center md:text-left">
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl md:text-5xl font-display font-black mb-4 tracking-tight"
+          >
+            Sinergi Kebaikan, <br className="hidden md:block" /><span className="text-emerald-300">Dua Juta Harapan.</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-emerald-100/70 max-w-lg mb-10 font-medium leading-relaxed"
+          >
+            Setiap kontribusi Anda adalah langkah nyata dalam memberdayakan masyarakat dan membangun ekosistem kemanusiaan yang mandiri.
+          </motion.p>
           
-          <div className="flex flex-wrap gap-12">
-            <div>
-              <div className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1">Total Kontribusi Uang</div>
-              <div className="text-4xl font-display font-black">Rp{(totalDonation.toLocaleString('id-ID'))}</div>
-            </div>
-            <div>
-               <div className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1">Barang Didonasikan</div>
-               <div className="text-4xl font-display font-black">{donationList.filter(d => d.type === 'goods').length} <span className="text-lg font-bold text-emerald-200">Koli</span></div>
-            </div>
+          <div className="flex flex-wrap gap-8 justify-center md:justify-start">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5, type: 'spring' }}
+            >
+              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Total Saldo Terhimpun</div>
+              <div className="text-4xl font-display font-black tracking-tighter">Rp{(totalDonation.toLocaleString('id-ID'))}</div>
+            </motion.div>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.6, type: 'spring' }}
+            >
+               <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Logistik Tersalurkan</div>
+               <div className="text-4xl font-display font-black tracking-tighter">{donationList.filter(d => d.type === 'goods').length} <span className="text-lg font-bold text-emerald-300">Unit</span></div>
+            </motion.div>
           </div>
         </div>
-        {/* ... */}
+
+        {/* Dynamic Background Elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl -ml-10 -mb-10"></div>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
