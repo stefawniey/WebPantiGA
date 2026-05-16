@@ -33,7 +33,13 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
         body: JSON.stringify(body),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.error("Gagal parse JSON dari server:", e);
+        throw new Error("Respon server tidak valid");
+      }
 
       if (response.ok) {
         onLogin(data);
@@ -42,8 +48,9 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       } else {
         setError(data.error || 'Terjadi kesalahan');
       }
-    } catch (err) {
-      setError('Gagal menghubungkan ke server');
+    } catch (err: any) {
+      console.error("Fetch Error:", err);
+      setError(err.message === "Respon server tidak valid" ? "Server sedang bermasalah (500)" : 'Gagal menghubungkan ke server');
     } finally {
       setLoading(false);
     }
