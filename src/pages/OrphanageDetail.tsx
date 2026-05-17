@@ -303,9 +303,10 @@ export default function OrphanageDetail() {
              />
              
              <motion.div
-               initial={{ opacity: 0, scale: 0.9, y: 20 }}
-               animate={{ opacity: 1, scale: 1, y: 0 }}
-               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               transition={{ duration: 0 }}
                className="relative w-full max-w-xl bg-white rounded-[3rem] shadow-4xl overflow-y-auto max-h-[90vh] custom-scrollbar"
              >
                 {success ? (
@@ -318,7 +319,7 @@ export default function OrphanageDetail() {
                         <CheckCircle2 className="w-12 h-12" />
                      </motion.div>
                      <h2 className="text-3xl font-display font-black text-emerald-900">Kontribusi Berhasil Terkirim!</h2>
-                     <p className="text-emerald-800/60 font-medium">Terima kasih atas kedermawanan Anda. Penyaluran Anda akan segera kami verifikasi di sistem.</p>
+                     <p className="text-emerald-800/60 font-medium">Terima kasih atas kontribusi Anda. Penyaluran Anda akan segera kami verifikasi di sistem.</p>
                      <p className="text-xs text-emerald-500 font-bold animate-pulse italic">Sedang mengalihkan ke halaman riwayat...</p>
                   </div>
                 ) : (

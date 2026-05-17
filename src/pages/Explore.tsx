@@ -229,7 +229,7 @@ export default function Explore() {
              transition={{ delay: 0.1 }}
              className="text-4xl font-display font-black text-emerald-900 mb-2 tracking-tight"
            >
-             {userRole === 'admin' ? 'Mitra Kemanusiaan' : 'Program Kebaikan'}
+             {userRole === 'admin' ? 'Mitra Kemanusiaan' : 'Mitra Terpercaya'}
            </motion.h1>
            <motion.p 
              initial={{ opacity: 0 }}
@@ -258,21 +258,23 @@ export default function Explore() {
             </motion.button>
           )}
 
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="relative w-full md:w-80 group"
-          >
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Cari program atau lokasi..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white border border-emerald-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-medium text-emerald-900 shadow-sm"
-            />
-          </motion.div>
+          {userRole !== 'admin' && (
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="relative w-full md:w-80 group"
+            >
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Cari program atau lokasi..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 bg-white border border-emerald-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-medium text-emerald-900 shadow-sm"
+              />
+            </motion.div>
+          )}
         </div>
       </motion.div>
 
@@ -392,11 +394,11 @@ export default function Explore() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <Link 
+                         <Link 
                             to={`/app/orphanage/${o.id}`}
-                            className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/20 group"
+                            className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/20 group hover:bg-emerald-700 transition-all font-bold"
                           >
-                             Lihat Detail Program 
+                             LIHAT DETAIL
                              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                           </Link>
                         </motion.div>
@@ -430,15 +432,16 @@ export default function Explore() {
             />
             
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0 }}
               className="relative w-full max-w-xl bg-white rounded-[3rem] shadow-4xl max-h-[90vh] flex flex-col"
             >
               <div className="p-8 sm:p-12 overflow-y-auto custom-scrollbar">
                   <div className="flex justify-between items-center mb-10">
                     <div>
-                       <h2 className="text-2xl font-display font-black text-emerald-900">{editingId ? 'Edit Program Kebaikan' : 'Program Kebaikan Baru'}</h2>
+                       <h2 className="text-2xl font-display font-black text-emerald-900">{editingId ? 'Edit Data Mitra' : 'Pendaftaran Mitra Baru'}</h2>
                        <p className="text-sm text-emerald-800/40 font-bold uppercase tracking-widest mt-1">Lengkapi informasi lembaga mitra</p>
                     </div>
                     <motion.button 

@@ -21,11 +21,39 @@ export default function App() {
 
   useEffect(() => {
     // Check session on load
-    const savedUser = localStorage.getItem('amanah_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
+    const verifySession = async () => {
+      const savedUser = localStorage.getItem('amanah_user');
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        
+        try {
+          const res = await fetch('/api/me', {
+            headers: { 'x-user-data': savedUser }
+          });
+          
+          if (res.status === 403) {
+            const data = await res.json();
+            alert(data.error || 'Akun Anda ditangguhkan');
+            handleLogout();
+          } else if (res.ok) {
+            const data = await res.json();
+            setUser(data);
+            localStorage.setItem('amanah_user', JSON.stringify(data));
+          }
+        } catch (e) {
+          console.error("Session verification failed", e);
+        }
+      }
+      setLoading(false);
+    };
+
+    const handleLogout = () => {
+      localStorage.removeItem('amanah_user');
+      setUser(null);
+    };
+
+    verifySession();
   }, []);
 
   if (loading) return (

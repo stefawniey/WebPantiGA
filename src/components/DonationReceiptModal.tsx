@@ -53,42 +53,32 @@ export default function DonationReceiptModal({ donation, isOpen, onClose }: Dona
   const methodInfo = getMethodDetails(donation.method || 'Transfer Bank');
 
   const containerVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    hidden: { opacity: 0 },
     visible: { 
       opacity: 1, 
-      scale: 1, 
-      y: 0,
       transition: {
-        type: "spring",
-        damping: 25,
-        stiffness: 300,
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        duration: 0,
+        staggerChildren: 0.05,
+        delayChildren: 0
       }
     },
     exit: { 
       opacity: 0, 
-      scale: 0.95, 
-      y: 20,
-      transition: { duration: 0.2 }
+      transition: { duration: 0 }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 }
   };
 
   const checkCircleVariants = {
-    hidden: { scale: 0, rotate: -45 },
+    hidden: { opacity: 0 },
     visible: { 
-      scale: 1, 
-      rotate: 0,
+      opacity: 1,
       transition: { 
-        type: "spring", 
-        damping: 12, 
-        stiffness: 200,
-        delay: 0.4
+        duration: 0
       }
     }
   };
@@ -145,7 +135,11 @@ export default function DonationReceiptModal({ donation, isOpen, onClose }: Dona
                     ? `Rp${donation.amount?.toLocaleString('id-ID')}` 
                     : 'Logistik'}
                 </motion.div>
-                <motion.div variants={itemVariants} className="text-emerald-800 font-bold text-base">Donasi Berhasil</motion.div>
+                <motion.div variants={itemVariants} className="text-emerald-800 font-bold text-base">
+                  {donation.status === 'completed' ? 'Donasi Berhasil' : 
+                   donation.status === 'pending' ? 'Donasi Tertunda' : 
+                   donation.status === 'verified' ? 'Donasi Terverifikasi' : 'Donasi Diproses'}
+                </motion.div>
                 <motion.div variants={itemVariants} className="text-emerald-800/40 text-[10px] font-black mt-1 uppercase tracking-widest">{formatDate(donation.created_at)}</motion.div>
               </div>
   
@@ -160,7 +154,9 @@ export default function DonationReceiptModal({ donation, isOpen, onClose }: Dona
                     <div className="text-emerald-600/60 text-[9px] font-black uppercase tracking-widest mt-0.5">TERVERIFIKASI</div>
                   </div>
                   <div className="px-2.5 py-1 bg-emerald-100/50 text-emerald-700 text-[8px] font-black rounded-lg uppercase tracking-wider">
-                    BERHASIL
+                    {donation.status === 'completed' ? 'BERHASIL' : 
+                     donation.status === 'pending' ? 'TERTUNDA' : 
+                     donation.status === 'verified' ? 'TERVERIFIKASI' : 'DIPROSES'}
                   </div>
                 </div>
                 

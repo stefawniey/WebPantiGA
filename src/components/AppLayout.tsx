@@ -27,7 +27,7 @@ export default function AppLayout({ user, setUser }: AppLayoutProps) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [selectedNotif, setSelectedNotif] = useState<any>(null);
   const [notifications, setNotifications] = useState([
-    { id: 1, title: 'Validasi Kontribusi', msg: 'Terdapat logistik baru dari Budi Santoso yang menanti validasi.', time: '5m', path: '/app', isRead: false },
+    { id: 1, title: 'Validasi Kontribusi', msg: 'Terdapat logistik baru yang menanti validasi dari pengguna.', time: '5m', path: '/app', isRead: false },
     { id: 2, title: 'Laporan Mingguan', msg: 'Analisis performa komprehensif untuk periode ini telah tersedia.', time: '2j', path: '/app/reports', isRead: false },
     { id: 3, title: 'Wawasan Strategis', msg: 'Optimalisasi distribusi logistik disarankan bagi wilayah Jawa Barat.', time: '1h', path: '/app', isRead: false },
   ]);
@@ -55,12 +55,12 @@ export default function AppLayout({ user, setUser }: AppLayoutProps) {
 
   const navItems = user.role === 'admin' ? [
     { label: 'Dasbor', path: '/app', icon: LayoutDashboard },
-    { label: 'Ekosistem Mitra', path: '/app/explore', icon: ShieldCheck },
+    { label: 'Mitra Terpercaya', path: '/app/explore', icon: ShieldCheck },
     { label: 'Manajemen Pengguna', path: '/app/users', icon: Users },
     { label: 'Laporan Donasi', path: '/app/reports', icon: BarChart3 },
   ] : [
     { label: 'Dasbor', path: '/app', icon: LayoutDashboard },
-    { label: 'Telusuri Program', path: '/app/explore', icon: Search },
+    { label: 'Mitra Terpercaya', path: '/app/explore', icon: Search },
     { label: 'Riwayat Donasi', path: '/app/my-donations', icon: Heart },
   ];
 
@@ -70,10 +70,10 @@ export default function AppLayout({ user, setUser }: AppLayoutProps) {
       <AnimatePresence initial={false}>
         {isSidebarOpen && (
           <motion.aside
-            initial={{ x: -300 }}
+            initial={{ x: -288 }}
             animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            exit={{ x: -288 }}
+            transition={{ duration: 0 }}
             className="fixed lg:relative z-50 w-72 h-screen bg-emerald-900 text-white p-6 flex flex-col shadow-2xl"
           >
             <div className="flex items-center justify-between mb-12 px-2">
@@ -133,7 +133,7 @@ export default function AppLayout({ user, setUser }: AppLayoutProps) {
                   <div className="text-[10px] uppercase font-bold tracking-widest text-emerald-400 mb-1">Status Akun</div>
                   <div className="text-xs font-bold text-white flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                    {user.role === 'admin' ? 'Administrator' : 'Donatur Aktif'}
+                    {user.role === 'admin' ? 'Administrator' : 'Pengguna Aktif'}
                   </div>
                </div>
                
@@ -330,9 +330,10 @@ export default function AppLayout({ user, setUser }: AppLayoutProps) {
                 className="absolute inset-0 bg-emerald-900/40 backdrop-blur-sm"
               ></motion.div>
               <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0 }}
                 className="relative w-full max-w-lg bg-white rounded-[2.5rem] p-10 shadow-4xl overflow-hidden"
               >
                 {/* Decorative elements */}

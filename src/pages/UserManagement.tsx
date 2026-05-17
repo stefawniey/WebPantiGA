@@ -78,8 +78,10 @@ export default function UserManagement() {
 
   const handleUpdateUser = async (userId: number | string, payload: Partial<User>) => {
     setUpdatingId(userId);
+    const originalUsers = [...users];
+    
     // Optimistic update
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...payload } : u));
+    setUsers(prev => prev.map(u => String(u.id) === String(userId) ? { ...u, ...payload } : u));
     
     try {
       const savedUser = localStorage.getItem('aman_user') || localStorage.getItem('amanah_user');
@@ -93,14 +95,15 @@ export default function UserManagement() {
       });
 
       if (!res.ok) {
-        // Revert on error
-        fetchUsers();
         const data = await res.json();
-        console.warn('Update failed:', data.error);
+        // Revert on error
+        setUsers(originalUsers);
+        alert(`Gagal memperbarui status: ${data.error || 'Terjadi kesalahan'}`);
       }
     } catch (err) {
       console.error('Connection error:', err);
-      fetchUsers(); // Revert
+      setUsers(originalUsers); // Revert
+      alert('Gagal menghubungi server. Periksa koneksi internet Anda.');
     } finally {
       setUpdatingId(null);
     }
@@ -164,7 +167,7 @@ export default function UserManagement() {
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
         <div>
            <h1 className="text-4xl font-display font-black text-emerald-900 mb-2">Pantau Aktivitas Pengguna</h1>
-           <p className="text-emerald-800/60 font-medium">Pantau kontribusi, tingkat partisipasi, serta status dermawan di platform Griya Amanah.</p>
+           <p className="text-emerald-800/60 font-medium">Pantau kontribusi, tingkat partisipasi, serta status pengguna di platform Griya Amanah.</p>
         </div>
         
         <div className="bg-white/50 backdrop-blur-md p-1.5 sm:p-2 rounded-[1.5rem] sm:rounded-3xl border border-white flex gap-1.5 sm:gap-2 w-full sm:w-[450px]">
@@ -186,7 +189,7 @@ export default function UserManagement() {
       {/* Stats Dashboard */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
          {[
-           { label: 'Total Dermawan', value: stats.total, icon: Users, color: 'emerald', filter: 'all' },
+           { label: 'Total Pengguna', value: stats.total, icon: Users, color: 'emerald', filter: 'all' },
            { label: 'Akumulasi Kontribusi', value: `Rp${(stats.totalFunds || 0).toLocaleString('id-ID')}`, icon: Wallet, color: 'blue', filter: 'all' },
            { label: 'Akun Ditangguhkan', value: stats.suspended, icon: Ban, color: 'red', filter: 'suspended' },
            { label: 'Laju Kontribusi', value: '+12%', icon: Award, color: 'amber', filter: 'all' }
@@ -218,7 +221,7 @@ export default function UserManagement() {
         </div>
         <input 
           type="text" 
-          placeholder="Cari dermawan berdasarkan nama atau email..."
+          placeholder="Cari pengguna berdasarkan nama atau email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-16 pr-6 py-6 bg-white border border-emerald-100 rounded-[2rem] focus:outline-none focus:ring-8 focus:ring-emerald-600/5 focus:border-emerald-600 transition-all font-medium text-emerald-900 shadow-xl shadow-emerald-900/5 placeholder:text-emerald-200"
@@ -234,137 +237,111 @@ export default function UserManagement() {
            <p className="text-emerald-800/60 max-w-md mx-auto">{error}</p>
         </div>
       ) : loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="glass rounded-[2rem] p-8 animate-pulse h-80" />
+        <div className="flex flex-col gap-4">
+          {[1,2,3,4,5].map(i => (
+            <div key={i} className="glass rounded-full p-4 animate-pulse h-20" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col gap-4">
           <AnimatePresence>
             {sortedUsers.map((u, index) => {
+              const isSuspended = u.status === 'suspended' || u.role === 'suspended';
               return (
                 <motion.div
                   key={u.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: index * 0.03 }}
                   whileHover={{ 
-                    y: -10,
+                    x: 10,
+                    scale: 1.01,
                     transition: { type: "spring", stiffness: 400, damping: 25 }
                   }}
-                  whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     setSelectedUser(u);
                     fetchUserDonations(u.id);
                   }}
-                  className={`glass rounded-[2rem] p-8 relative group overflow-hidden border-2 transition-all cursor-pointer hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-900/10 ${u.status === 'suspended' ? 'border-red-100 bg-red-50/10 shadow-sm' : 'border-emerald-100/50 shadow-sm'}`}
+                  className={`glass px-8 py-4 rounded-full relative group overflow-hidden border transition-all cursor-pointer flex items-center gap-6 ${isSuspended ? 'border-red-100 bg-red-50/20 grayscale-[0.3]' : 'border-emerald-100/50 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-900/5 shadow-sm'}`}
                 >
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-center gap-4">
-                       <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-xl bg-emerald-400 shadow-emerald-400/20">
-                          <UserIcon className="w-6 h-6" />
-                       </div>
-                       <div className="flex-1 min-w-0">
-                          <h3 className="font-display font-bold text-emerald-900 line-clamp-1">{u.name}</h3>
-                          <p className="text-[10px] text-emerald-800/40 font-black uppercase tracking-widest">{u.email}</p>
-                       </div>
-                    </div>
-                     <div className="flex gap-1">
-                        {u.status === 'suspended' ? (
-                          <div className="p-2 bg-red-100 text-red-600 rounded-lg">
-                             <Ban className="w-4 h-4" />
-                          </div>
+                  {/* Avatar Pengguna Baris Layout */}
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg bg-emerald-600 shrink-0 group-hover:scale-110 transition-transform">
+                     <UserIcon className="w-5 h-5" />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                     <div className="flex items-center gap-3">
+                        <h3 className="font-display font-black text-emerald-900 truncate">{u.name}</h3>
+                        <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
+                          u.role === 'admin' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700'
+                        }`}>
+                          {u.role}
+                        </span>
+                     </div>
+                     <p className="text-[10px] text-emerald-800/40 font-black uppercase tracking-widest truncate">{u.email}</p>
+                  </div>
+
+                  {/* Desktop Stats */}
+                  <div className="hidden md:flex items-center gap-12 px-12 border-x border-emerald-50 shrink-0">
+                     <div className="text-center min-w-[120px]">
+                        <div className="text-[8px] font-black text-emerald-800/30 uppercase tracking-widest mb-1">Total Donasi</div>
+                        <p className="font-display font-black text-emerald-600 leading-tight">Rp{(u.total_donations || 0).toLocaleString('id-ID')}</p>
+                     </div>
+                     <div className="text-center min-w-[80px]">
+                        <div className="text-[8px] font-black text-emerald-800/30 uppercase tracking-widest mb-1">Frekuensi</div>
+                        <p className="font-bold text-orange-600 leading-tight">{u.donation_count}x</p>
+                     </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 shrink-0">
+                     <div className="hidden lg:block text-right">
+                        <div className="text-[8px] font-black text-emerald-800/20 uppercase tracking-widest mb-0.5">Gabung Sejak</div>
+                        <div className="text-[10px] font-bold text-emerald-900">{formatToWIB(u.created_at, { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                     </div>
+                     
+                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {isSuspended ? (
+                          <button 
+                            disabled={updatingId === u.id || isDeleting}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUpdateUser(u.id, { status: 'active' });
+                            }}
+                            className="p-2.5 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-90"
+                            title="Aktifkan Akun"
+                          >
+                             <div className="w-4 h-4 flex items-center justify-center font-bold font-sans tracking-normal leading-none -mt-0.5">✓</div>
+                          </button>
                         ) : (
-                          <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-                             <CheckCircle2 className="w-4 h-4" />
-                          </div>
+                          <button 
+                            disabled={updatingId === u.id || isDeleting}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUpdateUser(u.id, { status: 'suspended' });
+                            }}
+                            className="p-2.5 bg-red-50 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all border border-red-100 shadow-sm active:scale-90"
+                            title="Blokir Akun"
+                          >
+                             <Ban className="w-4 h-4" />
+                          </button>
                         )}
+                        <button 
+                          disabled={updatingId === u.id || isDeleting}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUserToDelete(u);
+                          }}
+                          className="p-2.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-full transition-all border border-red-100 shadow-sm active:scale-90"
+                          title="Hapus Permanen"
+                        >
+                           <Trash2 className="w-4 h-4" />
+                        </button>
                      </div>
                   </div>
-
-                  <div className="grid grid-cols-1 gap-3 mb-6">
-            <div className="p-4 bg-emerald-50 rounded-2xl flex items-center justify-between gap-4 border border-emerald-100">
-                        <div className="min-w-0">
-                           <div className="flex items-center gap-2 text-emerald-800/40 mb-1 font-black uppercase text-[8px] tracking-widest">
-                              <Wallet className="w-3 h-3" />
-                              Total Kontribusi
-                           </div>
-                           <p className="text-sm sm:text-base font-display font-black text-emerald-900 leading-tight">Rp{(u.total_donations || 0).toLocaleString('id-ID')}</p>
-                        </div>
-                        <div className="text-right shrink-0">
-                           <div className="flex items-center gap-2 text-emerald-800/40 mb-1 font-black uppercase text-[8px] tracking-widest justify-end">
-                              <Heart className="w-3 h-3" />
-                              Frekuensi
-                           </div>
-                           <p className="text-sm font-bold text-emerald-900">{u.donation_count}x</p>
-                        </div>
-                     </div>
-
-                     <div className="p-4 bg-white/50 rounded-2xl border border-emerald-50">
-                        <div className="flex items-center gap-2 text-emerald-800/40 mb-3 font-black uppercase text-[8px] tracking-widest">
-                           <ExternalLink className="w-3 h-3" />
-                           Mitra Program Terpilih
-                        </div>
-                        <div className="flex flex-wrap gap-1.5">
-                           {u.supported_orphanages && u.supported_orphanages.length > 0 ? (
-                             u.supported_orphanages.map(program => (
-                               <span key={program} className="px-3 py-1 bg-white border border-emerald-100 text-emerald-600 rounded-lg text-[9px] font-bold">
-                                  {program}
-                               </span>
-                             ))
-                           ) : (
-                             <p className="text-[10px] text-emerald-800/30 italic">Belum memiliki riwayat kontribusi</p>
-                           )}
-                        </div>
-                     </div>
-                  </div>
-
-                  <div className="pt-6 border-t border-emerald-100/50 flex items-center justify-between gap-2 px-1">
-                    <div className="flex items-center gap-1.5 text-emerald-800/40 font-black uppercase text-[7px] tracking-widest bg-emerald-50/50 px-2.5 py-1 rounded-md border border-emerald-100/20 shrink-0 max-w-[150px] overflow-hidden whitespace-nowrap">
-                       <Calendar className="w-3 h-3 text-emerald-400 shrink-0" />
-                       <span className="truncate">Bergabung: {formatToWIB(u.created_at)}</span>
-                    </div>
- 
-                    <div className="flex items-center gap-2 shrink-0">
-                       {u.status === 'suspended' ? (
-                         <button 
-                           disabled={updatingId === u.id || isDeleting}
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             handleUpdateUser(u.id, { status: 'active' });
-                           }}
-                           className="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
-                           title="Aktifkan Akun"
-                         >
-                            <CheckCircle2 className="w-4 h-4" />
-                         </button>
-                       ) : (
-                         <button 
-                           disabled={updatingId === u.id || isDeleting}
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             handleUpdateUser(u.id, { status: 'suspended' });
-                           }}
-                           className="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all border border-red-100 shadow-sm active:scale-95"
-                           title="Blokir Akun"
-                         >
-                            <Ban className="w-4 h-4" />
-                         </button>
-                       )}
-                       <button 
-                         disabled={updatingId === u.id || isDeleting}
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           setUserToDelete(u);
-                         }}
-                         className="p-2.5 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl transition-all border border-red-100 shadow-sm active:scale-95"
-                         title="Hapus Permanen"
-                       >
-                          <Trash2 className="w-4 h-4" />
-                       </button>
-                    </div>
-                  </div>
+                  
+                  {/* Visual Hint for Row */}
+                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-emerald-500 transform translate-x-1 group-hover:translate-x-0 transition-transform"></div>
                 </motion.div>
               );
             })}
@@ -383,7 +360,7 @@ export default function UserManagement() {
       {/* Detail Modal */}
       <AnimatePresence>
         {selectedUser && (
-          <div className="fixed inset-0 lg:left-72 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -392,9 +369,10 @@ export default function UserManagement() {
               className="absolute inset-0 bg-emerald-900/40 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0 }}
               className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             >
               <div className="p-8 border-b border-emerald-50 flex items-center justify-between bg-emerald-50/30">
@@ -459,7 +437,7 @@ export default function UserManagement() {
                         <div className="inline-block p-4 bg-emerald-50 rounded-2xl text-emerald-600 mb-4">
                            <AlertCircle className="w-6 h-6" />
                         </div>
-                        <div className="text-lg font-display font-black text-emerald-900 mb-3">Wawasan Strategis: Profil Dermawan</div>
+                        <div className="text-lg font-display font-black text-emerald-900 mb-3">Wawasan Strategis: Profil Pengguna</div>
                         <div className="text-sm text-emerald-800/50 leading-relaxed font-medium max-w-md mx-auto">
                            Berdasarkan analisis frekuensi, {selectedUser.name} menunjukkan tingkat loyalitas yang tinggi. 
                            Kontribusi konsisten sangat membantu stabilitas stok logistik di lembaga mitra.
@@ -487,7 +465,7 @@ export default function UserManagement() {
                            ) : analysisDone ? (
                              <>Analisis Selesai ✓</>
                            ) : (
-                             <>Analisis Detail Kontributor</>
+                             <>Analisis Detail Pengguna</>
                            )}
                         </button>
 
@@ -529,7 +507,7 @@ export default function UserManagement() {
                                     <Heart className="w-5 h-5" />
                                  </div>
                                  <div>
-                                    <p className="font-bold text-emerald-900 text-sm">{don.orphanage?.name || 'Lembaga Mitra'}</p>
+                                    <p className="font-bold text-emerald-900 text-sm break-words max-w-[150px] sm:max-w-[220px]">{don.orphanage?.name || 'Lembaga Mitra'}</p>
                                     <p className="text-[10px] text-emerald-800/40 font-bold">
                                       {formatToWIB(don.created_at, {
                                         day: 'numeric',
@@ -542,7 +520,9 @@ export default function UserManagement() {
                                  </div>
                               </div>
                               <div className="text-right">
-                                 <p className="font-display font-black text-emerald-900 leading-none">Rp{Number(don.amount).toLocaleString('id-ID')}</p>
+                                 <p className="font-display font-black text-emerald-900 leading-none">
+                                    {don.type === 'money' ? `Rp${Number(don.amount).toLocaleString('id-ID')}` : (don.goods_detail || 'Logistik')}
+                                 </p>
                                  <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${don.status === 'verified' || don.status === 'completed' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
                                     {don.status === 'verified' ? 'Terverifikasi' : 
                                      don.status === 'completed' ? 'Selesai' : 
@@ -576,7 +556,17 @@ export default function UserManagement() {
                     >
                        Batal
                     </button>
-                    {selectedUser.status !== 'suspended' && (
+                    {selectedUser.status === 'suspended' ? (
+                      <button 
+                        onClick={() => {
+                          handleUpdateUser(selectedUser.id, { status: 'active' });
+                          setSelectedUser(null);
+                        }}
+                        className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20"
+                      >
+                         Aktifkan Akun
+                      </button>
+                    ) : (
                       <button 
                         onClick={() => {
                           handleUpdateUser(selectedUser.id, { status: 'suspended' });
@@ -594,7 +584,7 @@ export default function UserManagement() {
         )}
         {/* Confirmation Modal */}
         {userToDelete && (
-          <div className="fixed inset-0 lg:left-72 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -603,9 +593,10 @@ export default function UserManagement() {
               className="absolute inset-0 bg-emerald-900/40 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0 }}
               className="relative w-full max-w-sm bg-white rounded-[2.5rem] shadow-2xl overflow-hidden p-8 text-center border border-emerald-100/50"
             >
                <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner ring-4 ring-red-50/50">

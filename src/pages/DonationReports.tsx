@@ -196,7 +196,22 @@ export default function DonationReports() {
                         d.type?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesType = filters.type === 'all' || d.type === filters.type;
-    const matchesStatus = filters.status === 'all' || d.status === filters.status;
+    
+    // Status matching - make it more robust and match display logic
+    const status = (d.status || '').toLowerCase();
+    const isVerified = status.includes('verified') || status.includes('completed') || status.includes('selesai');
+    const isPending = status.includes('pending') || status.includes('tunda');
+    
+    let matchesStatus = false;
+    if (filters.status === 'all') {
+      matchesStatus = true;
+    } else if (filters.status === 'verified') {
+      matchesStatus = isVerified;
+    } else if (filters.status === 'pending') {
+      matchesStatus = isPending;
+    } else if (filters.status === 'cancelled') {
+      matchesStatus = !isVerified && !isPending;
+    }
 
     return matchesSearch && matchesType && matchesStatus;
   }) || [];
@@ -759,9 +774,10 @@ export default function DonationReports() {
               className="absolute inset-0 bg-emerald-950/40 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0 }}
               className="relative w-full max-w-4xl bg-white rounded-[3rem] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
             >
               <div className="p-8 border-b border-emerald-50 flex items-center justify-between bg-emerald-50/30">

@@ -239,7 +239,7 @@ export default function AdminDashboard() {
             </div>
             
             <div className="glass rounded-[3.5rem] overflow-hidden border border-emerald-100 flex flex-col flex-1 shadow-2xl shadow-emerald-900/[0.05] relative">
-               <div className="h-[480px] overflow-y-auto no-scrollbar bg-white/40">
+               <div className="min-h-[600px] max-h-[800px] overflow-y-auto bg-white/40">
                  <table className="w-full text-left border-separate border-spacing-0">
                     <thead className="sticky top-0 z-20">
                        <tr className="bg-emerald-50/95 backdrop-blur-md border-b-2 border-emerald-200">
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                              </td>
                              <td className="px-6 py-4 text-right">
                                 <div className="font-display font-black text-emerald-900 text-sm">
-                                   {d.type === 'money' ? `Rp${(Number(d.amount) || 0).toLocaleString('id-ID')}` : 'Logistik'}
+                                   {d.type === 'money' ? `Rp${(Number(d.amount) || 0).toLocaleString('id-ID')}` : (d.goods_detail || 'Logistik')}
                                 </div>
                              </td>
                              <td className="px-6 py-4">
@@ -390,9 +390,10 @@ export default function AdminDashboard() {
               className="absolute inset-0 bg-emerald-950/40 backdrop-blur-xl"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0 }}
               className="relative w-full max-w-5xl bg-white rounded-[3rem] sm:rounded-[4.5rem] shadow-4xl flex flex-col md:flex-row h-[90vh] md:h-[80vh] border border-emerald-50/50 overflow-hidden"
             >
                 <motion.button 

@@ -27,11 +27,20 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
       const endpoint = isLogin ? '/api/login' : '/api/register';
       const body = isLogin ? { email, password } : { name, email, password };
 
+      console.log(`[Auth] Mencoba ${isLogin ? 'login' : 'register'} ke ${endpoint}...`);
+      
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 30000);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
+        signal: controller.signal
       });
+      
+      clearTimeout(id);
+      console.log(`[Auth] Respons diterima: ${response.status} ${response.statusText}`);
 
       let data;
       try {
@@ -94,7 +103,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
                 <span className="text-xl font-display font-bold text-white tracking-tight">Griya Amanah</span>
               </Link>
               <h2 className="text-5xl font-display font-bold text-white mb-6 leading-tight">Selamat Datang di Jaringan Kebaikan.</h2>
-              <p className="text-emerald-100/70 text-lg leading-relaxed text-sm">Bergabunglah dengan komunitas dermawan yang telah memberikan dampak nyata bagi pendidikan dan kesejahteraan mereka yang membutuhkan.</p>
+              <p className="text-emerald-100/70 text-lg leading-relaxed text-sm">Bergabunglah dengan komunitas pengguna yang telah memberikan dampak nyata bagi pendidikan dan kesejahteraan mereka yang membutuhkan.</p>
             </div>
             
             <motion.div 

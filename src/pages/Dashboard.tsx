@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Wallet, Gift, ChevronRight, TrendingUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Donation, Orphanage } from '../types';
 import { formatToWIB, formatTimeWIB } from '../utils';
 import DonationReceiptModal from '../components/DonationReceiptModal';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [donations, setDonations] = useState<Donation[]>([]);
   const [orphanages, setOrphanages] = useState<Orphanage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,42 +56,88 @@ export default function Dashboard() {
         transition={{ duration: 0.5 }}
         className="premium-gradient rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-emerald-200"
       >
-        <div className="relative z-10 text-center md:text-left">
-          <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-3xl md:text-5xl font-display font-black mb-4 tracking-tight"
-          >
-            Sinergi Kebaikan, <br className="hidden md:block" /><span className="text-emerald-300">Dua Juta Harapan.</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-emerald-100/70 max-w-lg mb-10 font-medium leading-relaxed"
-          >
-            Setiap kontribusi Anda adalah langkah nyata dalam memberdayakan masyarakat dan membangun ekosistem kemanusiaan yang mandiri.
-          </motion.p>
-          
-          <div className="flex flex-wrap gap-8 justify-center md:justify-start">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.5, type: 'spring' }}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="text-center md:text-left flex-1">
+            <motion.h1 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl md:text-5xl font-display font-black mb-4 tracking-tight"
             >
-              <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Total Saldo Terhimpun</div>
-              <div className="text-4xl font-display font-black tracking-tighter">Rp{(totalDonation.toLocaleString('id-ID'))}</div>
-            </motion.div>
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.6, type: 'spring' }}
+              Sinergi Kebaikan, <br className="hidden md:block" /><span className="text-emerald-300">Dua Juta Harapan.</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-emerald-100/70 max-w-lg mb-10 font-medium leading-relaxed"
             >
-               <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Logistik Tersalurkan</div>
-               <div className="text-4xl font-display font-black tracking-tighter">{donationList.filter(d => d.type === 'goods').length} <span className="text-lg font-bold text-emerald-300">Unit</span></div>
-            </motion.div>
+              Setiap kontribusi Anda adalah langkah nyata dalam memberdayakan masyarakat dan membangun ekosistem kemanusiaan yang mandiri.
+            </motion.p>
+            
+            <div className="flex flex-wrap gap-8 justify-center md:justify-start">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.5, type: 'spring' }}
+              >
+                <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Total Saldo Terhimpun</div>
+                <div className="text-4xl font-display font-black tracking-tighter">Rp{(totalDonation.toLocaleString('id-ID'))}</div>
+              </motion.div>
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.6, type: 'spring' }}
+              >
+                 <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Logistik Tersalurkan</div>
+                 <div className="text-4xl font-display font-black tracking-tighter">{donationList.filter(d => d.type === 'goods').length} <span className="text-lg font-bold text-emerald-300">Unit</span></div>
+              </motion.div>
+            </div>
           </div>
+
+          {/* Decorative Illustration */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ delay: 0.3, duration: 0.8, type: 'spring' }}
+            className="hidden md:block relative w-full max-w-[450px] aspect-video group"
+          >
+            <div className="absolute inset-0 bg-emerald-400/20 rounded-full blur-[100px] animate-pulse"></div>
+            
+            <div className="relative w-full h-full rounded-[3rem] overflow-hidden border-8 border-white/10 shadow-2xl backdrop-blur-sm bg-white/5 transition-all duration-700 group-hover:scale-[1.02] group-hover:rotate-1">
+              <img 
+                src="/src/assets/images/hero_illustration_1779007589330.png" 
+                alt="Hero Illustration" 
+                className="w-full h-full object-cover relative z-10"
+                referrerPolicy="no-referrer"
+              />
+              {/* Glass Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none z-20"></div>
+            </div>
+            
+            {/* Floating UI Badges */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-6 -left-8 glass px-5 py-2.5 rounded-2xl border border-white/30 bg-white/20 backdrop-blur-xl z-30 shadow-xl"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></div>
+                <span className="text-[11px] font-black uppercase tracking-widest text-emerald-900 drop-shadow-sm">Dampak Nyata</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute -bottom-4 -right-6 glass px-5 py-2.5 rounded-2xl border border-white/30 bg-white/20 backdrop-blur-xl z-30 shadow-xl"
+            >
+              <div className="flex items-center gap-2">
+                <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+                <span className="text-[11px] font-black uppercase tracking-widest text-emerald-900 drop-shadow-sm">Mitra Terpercaya</span>
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Dynamic Background Elements */}
@@ -110,36 +157,38 @@ export default function Dashboard() {
             </motion.div>
           </div>
           
-          <div className="space-y-4">
-            {donationList.length > 0 ? donationList.slice(0, 3).map((d) => (
+          <div className="space-y-3">
+            {donationList.length > 0 ? donationList.slice(0, 5).map((d) => (
               <motion.div 
                 key={d.id}
                 initial={{ opacity: 0, x: -10 }}
-                whileHover={{ scale: 1.02, x: 5 }}
+                whileHover={{ scale: 1.01, x: 5 }}
                 animate={{ opacity: 1, x: 0 }}
-                onClick={() => handleDonationClick(d)}
-                className="glass p-5 rounded-3xl flex items-center gap-4 group hover:bg-white transition-shadow shadow-sm hover:shadow-md cursor-pointer"
+                onClick={() => navigate(`/app/orphanage/${d.orphanage_id}`)}
+                className="glass p-3 px-6 rounded-full flex items-center gap-5 group hover:bg-white transition-all shadow-sm hover:shadow-md cursor-pointer border border-transparent hover:border-emerald-100"
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${d.type === 'money' ? 'bg-emerald-50 text-emerald-600' : 'bg-gold/10 text-gold'}`}>
-                  {d.type === 'money' ? <Wallet className="w-6 h-6" /> : <Gift className="w-6 h-6" />}
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-inner ${d.type === 'money' ? 'bg-emerald-50 text-emerald-600' : 'bg-gold/10 text-gold'}`}>
+                  {d.type === 'money' ? <Wallet className="w-5 h-5" /> : <Gift className="w-5 h-5" />}
                 </div>
-                <div className="flex-1">
-                  <div className="font-bold text-emerald-900 group-hover:text-emerald-700">{d.orphanage_name}</div>
-                  <div className="text-xs text-emerald-800/60 font-medium">
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-sm text-emerald-900 group-hover:text-emerald-700 truncate">{d.orphanage_name}</div>
+                  <div className="text-[10px] text-emerald-800/60 font-bold uppercase tracking-wider truncate">
                     {d.type === 'money' ? `Kontribusi Rp${d.amount?.toLocaleString('id-ID')}` : d.goods_detail}
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className={`text-[10px] uppercase font-black tracking-widest px-3 py-1 rounded-full ${
+                <div className="flex items-center gap-4 shrink-0">
+                  <div className="text-right hidden sm:block">
+                     <div className="text-[10px] text-emerald-800/40 font-bold">
+                        {formatToWIB(d.created_at, { day: 'numeric', month: 'short' })}
+                     </div>
+                  </div>
+                  <span className={`text-[9px] uppercase font-black tracking-widest px-3 py-1.5 rounded-full shadow-sm ${
                     d.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-700'
                   }`}>
                     {d.status === 'completed' ? 'Selesai' : 
                      d.status === 'pending' ? 'Tertunda' : 
                      d.status === 'verified' ? 'Terverifikasi' : d.status}
                   </span>
-                  <div className="text-[10px] text-emerald-800/40 mt-1 font-bold">
-                    {formatToWIB(d.created_at, { day: 'numeric', month: 'short', year: 'numeric' })} • {formatTimeWIB(d.created_at)}
-                  </div>
                 </div>
               </motion.div>
             )) : (

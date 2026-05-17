@@ -26,7 +26,7 @@ export default function LandingPage() {
               href="#impact" 
               className="hover:text-emerald-600 transition-colors hover:scale-110 duration-200"
             >
-              Dampak
+              Dampak Nyata
             </motion.a>
             <motion.a 
               initial={{ opacity: 0, y: -10 }}
@@ -35,7 +35,7 @@ export default function LandingPage() {
               href="#featured" 
               className="hover:text-emerald-600 transition-colors hover:scale-110 duration-200"
             >
-              Program Kebaikan
+              Mitra Terpercaya
             </motion.a>
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
@@ -154,7 +154,7 @@ export default function LandingPage() {
             {[
               {
                 title: "Transparansi Total",
-                desc: "Laporan penyaluran yang dapat dipantau secara langsung oleh para dermawan.",
+                desc: "Laporan penyaluran yang dapat dipantau secara langsung oleh para pengguna.",
                 icon: ShieldCheck,
                 color: "text-emerald-600",
                 bg: "bg-emerald-50",
@@ -203,7 +203,7 @@ export default function LandingPage() {
       <section id="impact" className="py-24 bg-white border-y border-emerald-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
-             <div className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">Ringkasan Dampak</div>
+             <div className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">Ringkasan Dampak Nyata</div>
              <h2 className="text-4xl font-display font-black text-emerald-900">Transformasi Nyata dari Kepedulian Anda</h2>
              <p className="text-emerald-800/60 font-medium leading-relaxed">Setiap bantuan yang Anda salurkan menjadi harapan bagi masa depan mereka.</p>
           </div>
@@ -255,7 +255,7 @@ export default function LandingPage() {
                whileHover={{ y: -10, scale: 1.02 }}
                className="group relative h-[500px] rounded-[3rem] overflow-hidden shadow-2xl"
              >
-                <img src="https://images.unsplash.com/photo-1540479859555-17af45c78602?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Program Kebaikan 1" referrerPolicy="no-referrer" />
+                <img src="https://images.unsplash.com/photo-1540479859555-17af45c78602?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Mitra Terpercaya 1" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-900 via-emerald-900/40 to-transparent p-12 flex flex-col justify-end">
                   <motion.span 
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -302,7 +302,7 @@ export default function LandingPage() {
           <div className="premium-gradient rounded-[4rem] p-16 md:p-32 text-center relative overflow-hidden shadow-3xl">
             <div className="relative z-10">
               <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-8 tracking-tight">Kebaikan Dimulai dari Tindakan Anda.</h2>
-              <p className="text-xl text-emerald-100/80 mb-12 max-w-2xl mx-auto">Mari bergabung bersama ribuan donatur lainnya untuk mewujudkan mimpi mereka yang membutuhkan di seluruh Indonesia.</p>
+              <p className="text-xl text-emerald-100/80 mb-12 max-w-2xl mx-auto">Mari bergabung bersama ribuan pengguna lainnya untuk mewujudkan mimpi mereka yang membutuhkan di seluruh Indonesia.</p>
               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
